@@ -46,6 +46,7 @@ config ATH79_MACH_CARAMBOLA2
 	select ATH79_DEV_SPI
 	select ATH79_DEV_USB
 	select ATH79_DEV_WMAC
+	select ATH79_DEV_ETH
 	help
 	  Say 'Y' here if you want your kernel to support the
 	  8 device Carambola 2 board.

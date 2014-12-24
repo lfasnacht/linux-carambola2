@@ -11,6 +11,7 @@
 #include <asm/mach-ath79/ath79.h>
 #include <asm/mach-ath79/ar71xx_regs.h>
 #include "common.h"
+#include "dev-eth.h"
 #include "dev-gpio-buttons.h"
 #include "dev-leds-gpio.h"
 #include "dev-spi.h"
@@ -104,6 +105,19 @@ static void __init carambola2_common_setup(void)
 	ath79_register_spi(&carambola_spi_data, carambola_spi_info,
 			    ARRAY_SIZE(carambola_spi_info));
 	ath79_register_wmac(art + CARAMBOLA2_CALDATA_OFFSET);
+
+	ath79_setup_ar933x_phy4_switch(true, true);
+
+	ath79_init_mac(ath79_eth0_data.mac_addr, art + CARAMBOLA2_MAC0_OFFSET, 0);
+	ath79_init_mac(ath79_eth1_data.mac_addr, art + CARAMBOLA2_MAC1_OFFSET, 0);
+
+	ath79_register_mdio(0, 0x0);
+
+	/* LAN ports */
+	ath79_register_eth(1);
+
+	/* WAN port */
+	ath79_register_eth(0);
 }
 
 static void __init carambola2_setup(void)
@@ -111,6 +125,12 @@ static void __init carambola2_setup(void)
 	carambola2_common_setup();
 
 	platform_add_devices(carambola2_devices, ARRAY_SIZE(carambola2_devices));
+
+	ath79_gpio_function_disable(AR724X_GPIO_FUNC_ETH_SWITCH_LED0_EN |
+				AR724X_GPIO_FUNC_ETH_SWITCH_LED1_EN |
+				AR724X_GPIO_FUNC_ETH_SWITCH_LED2_EN |
+				AR724X_GPIO_FUNC_ETH_SWITCH_LED3_EN |
+				AR724X_GPIO_FUNC_ETH_SWITCH_LED4_EN);
 
 	ath79_register_leds_gpio(-1, ARRAY_SIZE(carambola2_leds_gpio),
 				 carambola2_leds_gpio);
